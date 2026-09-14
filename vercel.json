@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "name": "ai-self-healing-demo-app",
+  "cleanUrls": true,
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/demo_app/$1"
+    }
+  ]
+}

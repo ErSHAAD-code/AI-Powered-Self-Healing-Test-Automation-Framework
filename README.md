@@ -9,6 +9,7 @@
 ![Anthropic Claude](https://img.shields.io/badge/AI-Anthropic%20Claude--3.5--Sonnet-purple.svg)
 ![CI/CD Pipeline](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions%20%7C%20Jenkins-black.svg)
 ![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FErSHAAD-code%2FAI-Powered-Self-Healing-Test-Automation-Framework)
 
 **An Enterprise AI-Powered Self-Healing Test Automation Framework Across UI, BDD, API, ETL/Database, and Performance Testing Pillars.**
 

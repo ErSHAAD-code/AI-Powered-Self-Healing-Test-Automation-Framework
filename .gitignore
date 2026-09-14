@@ -1,0 +1,63 @@
+# ==============================================================================
+# AI-Augmented QE Capstone Platform — .gitignore
+# ==============================================================================
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# --- Virtual Environment ---
+venv/
+.venv/
+env/
+.env
+
+# --- IDE ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Project: Databases (generated at runtime) ---
+data/*.db
+data/*.db-journal
+
+# --- Project: Audit Logs (generated at runtime) ---
+data/*.jsonl
+
+# --- Project: Reports (generated at runtime) ---
+reports/
+logs/
+
+# --- Project: Screenshots ---
+reports/screenshots/
+
+# --- Project: Playwright ---
+playwright-report/
+test-results/
+
+# --- Project: Locust ---
+*.csv
+locust_*.html
+
+# --- Secrets ---
+.env
+.env.local
+.env.production
+
+# --- Misc ---
+*.log
+*.bak
+*.tmp

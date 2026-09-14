@@ -1,0 +1,40 @@
+# AI-Powered Self-Healing Test Automation Framework
+# Core dependencies pinned to minimum compatible versions
+
+# === UI Automation ===
+playwright>=1.47.0
+selenium>=4.25.0
+
+# === Test Runner & BDD ===
+pytest>=8.3.0
+pytest-bdd>=7.3.0
+pytest-html>=4.1.1
+pytest-xdist>=3.6.1
+
+# === LLM Providers ===
+anthropic>=0.34.0
+google-generativeai>=0.8.0
+
+# === API Testing ===
+requests>=2.32.0
+jsonschema>=4.23.0
+
+# === HTML Parsing & Fuzzy Matching ===
+beautifulsoup4>=4.12.3
+lxml>=5.3.0
+rapidfuzz>=3.9.0
+
+# === Database & Data Processing ===
+sqlalchemy>=2.0.0
+pandas>=2.2.0
+
+# === Validation & Config ===
+pydantic>=2.9.0
+python-dotenv>=1.0.1
+pyyaml>=6.0.2
+
+# === Reporting ===
+jinja2>=3.1.4
+
+# === Performance Testing ===
+locust>=2.31.0

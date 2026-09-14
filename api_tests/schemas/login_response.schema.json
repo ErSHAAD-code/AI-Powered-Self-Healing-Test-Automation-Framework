@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Login API Response",
+  "description": "JSON Schema for the login endpoint response. Used for contract testing.",
+  "oneOf": [
+    {
+      "title": "Successful Login Response",
+      "type": "object",
+      "required": ["success", "token", "user"],
+      "properties": {
+        "success": { "type": "boolean", "const": true },
+        "token": {
+          "type": "string",
+          "minLength": 10,
+          "description": "JWT authentication token"
+        },
+        "user": {
+          "type": "object",
+          "required": ["username", "role", "last_login"],
+          "properties": {
+            "username": { "type": "string", "minLength": 1 },
+            "role": {
+              "type": "string",
+              "enum": ["administrator", "tester", "viewer"]
+            },
+            "last_login": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Failed Login Response",
+      "type": "object",
+      "required": ["success", "error"],
+      "properties": {
+        "success": { "type": "boolean", "const": false },
+        "error": { "type": "string" },
+        "message": { "type": "string" }
+      }
+    }
+  ]
+}

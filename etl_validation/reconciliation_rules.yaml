@@ -1,0 +1,67 @@
+# ==============================================================================
+# ETL Reconciliation Rules — Source-to-Target Validation Configuration
+# ==============================================================================
+
+reconciliation:
+  name: "Orders ETL Pipeline"
+  description: "Validates the orders ETL from source to target"
+
+  source:
+    file: "etl_validation/source_data/orders.csv"
+    key_column: "order_id"
+
+  target:
+    file: "etl_validation/target_data/orders.csv"
+    key_column: "order_id"
+
+  # Column-level validation rules
+  rules:
+    - name: "Row Count Match"
+      type: "row_count"
+      tolerance_percent: 0
+
+    - name: "Key Completeness"
+      type: "key_match"
+      description: "All source keys must exist in target"
+
+    - name: "Customer Name Match"
+      type: "column_match"
+      source_column: "customer_name"
+      target_column: "customer_name"
+      case_sensitive: false
+
+    - name: "Product Match"
+      type: "column_match"
+      source_column: "product"
+      target_column: "product"
+
+    - name: "Quantity Match"
+      type: "column_match"
+      source_column: "quantity"
+      target_column: "quantity"
+      data_type: "numeric"
+
+    - name: "Unit Price Match"
+      type: "column_match"
+      source_column: "unit_price"
+      target_column: "unit_price"
+      data_type: "numeric"
+      tolerance_percent: 0.01
+
+    - name: "Total Amount Derived"
+      type: "derived_column"
+      description: "target.total_amount should equal source.quantity * source.unit_price"
+      target_column: "total_amount"
+      formula: "quantity * unit_price"
+      tolerance_percent: 0.01
+
+    - name: "Status Match"
+      type: "column_match"
+      source_column: "status"
+      target_column: "status"
+      valid_values: ["completed", "pending", "cancelled"]
+
+    - name: "Date Format"
+      type: "column_format"
+      target_column: "order_date"
+      expected_format: "YYYY-MM-DD"

@@ -1,0 +1,109 @@
+# ==============================================================================
+# AI-Powered Self-Healing Test Automation Framework — Central Configuration
+# ==============================================================================
+
+# --- Browser / UI Automation ---
+browser:
+  type: chromium                    # chromium | firefox | webkit
+  headless: true
+  timeout_ms: 30000                 # Global timeout for Playwright actions
+  viewport:
+    width: 1280
+    height: 720
+  screenshot_on_failure: true
+  screenshot_dir: reports/screenshots
+
+# --- Demo Application ---
+demo_app:
+  base_url: http://localhost:8000
+  path: demo_app/index.html
+
+# --- LLM Provider Configuration ---
+llm:
+  primary_provider: claude          # claude | gemini
+  fallback_provider: gemini
+  max_retries: 3
+  retry_delay_seconds: 2
+  request_timeout_seconds: 30
+
+  claude:
+    model: claude-sonnet-4-20250514
+    max_tokens: 2048
+    temperature: 0.1                # Low temperature for deterministic outputs
+
+  gemini:
+    model: gemini-3.6-flash
+    max_tokens: 2048
+    temperature: 0.1
+
+# --- Self-Healing Locator Configuration ---
+healing:
+  enabled: true
+  auto_apply_threshold: 0.85       # >= 0.85: auto-heal and continue, mark "HEALED"
+  review_threshold: 0.60           # >= 0.60: fail test, log suggested fix for review
+  # Below 0.60: normal failure, no AI noise
+
+  dom_context:
+    max_chars: 2000                 # Max DOM fragment size sent to LLM
+    include_parent_levels: 3        # How many parent levels to include
+    strip_scripts: true
+    strip_styles: true
+
+  repository:
+    db_path: data/healing_history.db
+    cache_ttl_hours: 168            # 7 days before re-evaluating cached healings
+
+  audit_log:
+    path: data/healing_audit_log.jsonl
+    enabled: true
+
+# --- Test Data Generation ---
+test_data:
+  synthetic:
+    default_count: 10
+    locale: en_US
+
+# --- API Testing ---
+api_testing:
+  base_url: http://localhost:8000/api
+  schema_dir: api_tests/schemas
+  request_timeout_seconds: 10
+
+# --- ETL / Database Validation ---
+etl:
+  source_dir: etl_validation/source_data
+  target_dir: etl_validation/target_data
+  rules_file: etl_validation/reconciliation_rules.yaml
+  tolerance_percent: 0.01           # 1% tolerance for numeric comparisons
+
+# --- Performance Testing ---
+performance:
+  baseline_file: performance/baselines/perf_baseline.json
+  locust:
+    host: http://localhost:8000
+    users: 10
+    spawn_rate: 2
+    run_time_seconds: 60
+  regression:
+    latency_tolerance_percent: 20   # Fail if p95 regresses by more than 20%
+    error_rate_threshold: 0.05      # Fail if error rate exceeds 5%
+
+# --- Reporting ---
+reporting:
+  output_dir: reports
+  healing_report: reports/healing_report.html
+  unified_report: reports/unified_report.html
+  template_dir: reporting/templates
+
+# --- Logging ---
+logging:
+  level: INFO
+  format: json                      # json | text
+  file: logs/test_execution.log
+  max_bytes: 10485760               # 10 MB
+  backup_count: 5
+
+# --- Test Run History (for flaky detection) ---
+test_history:
+  db_path: data/test_run_history.db
+  retention_days: 90

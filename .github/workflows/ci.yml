@@ -1,0 +1,168 @@
+name: CI — AI-Powered Self-Healing Test Automation Framework
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  PYTHON_VERSION: "3.12"
+  HEADLESS: "true"
+
+jobs:
+  # ====================================================================
+  # Job 1: UI & BDD Tests
+  # ====================================================================
+  ui-and-bdd-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          playwright install chromium --with-deps
+
+      - name: Run UI tests
+        run: pytest tests/ -v -m "smoke or regression" --html=reports/ui_report.html --self-contained-html
+
+      - name: Run BDD tests
+        run: pytest bdd/ -v -m bdd --html=reports/bdd_report.html --self-contained-html
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-bdd-reports
+          path: reports/
+
+  # ====================================================================
+  # Job 2: API Tests
+  # ====================================================================
+  api-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run API tests
+        run: pytest api_tests/ -v -m api --html=reports/api_report.html --self-contained-html
+
+      - name: Upload API reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-reports
+          path: reports/
+
+  # ====================================================================
+  # Job 3: ETL Validation
+  # ====================================================================
+  etl-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run ETL validation tests
+        run: pytest etl_validation/ -v -m etl --html=reports/etl_report.html --self-contained-html
+
+      - name: Upload ETL reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: etl-reports
+          path: reports/
+
+  # ====================================================================
+  # Job 4: Performance Smoke Test
+  # ====================================================================
+  performance-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run performance regression tests
+        run: pytest performance/ -v -m performance --html=reports/perf_report.html --self-contained-html
+
+      - name: Upload performance reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: perf-reports
+          path: reports/
+
+  # ====================================================================
+  # Job 5: Aggregate Reports & AI Analysis
+  # ====================================================================
+  ai-flaky-detection-and-report:
+    needs: [ui-and-bdd-tests, api-tests, etl-validation, performance-smoke]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Download all reports
+        uses: actions/download-artifact@v4
+        with:
+          path: reports/
+
+      - name: Generate unified AI report
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: |
+          python -c "
+          from reporting.ai_summary_report_generator import AISummaryReportGenerator
+          gen = AISummaryReportGenerator()
+          gen.generate()
+          print('Unified report generated')
+          "
+
+      - name: Upload unified report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unified-report
+          path: reports/unified_report.html

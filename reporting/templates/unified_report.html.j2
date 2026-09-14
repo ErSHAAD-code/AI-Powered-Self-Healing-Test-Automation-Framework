@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            line-height: 1.6;
+            padding: 40px;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(127,90,240,0.1), rgba(44,182,125,0.1));
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            background: linear-gradient(90deg, #7f5af0, #2cb67d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .header .subtitle {
+            color: #94a1b2;
+            font-size: 14px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #7f5af0, #2cb67d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label { font-size: 12px; color: #94a1b2; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Event Cards */
+        .events-section h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #fffffe;
+        }
+
+        .event-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .event-card:hover { border-color: rgba(127,90,240,0.3); }
+
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .event-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-healed { background: rgba(44,182,125,0.15); color: #2cb67d; }
+        .badge-suggest { background: rgba(255,193,7,0.15); color: #ffc107; }
+        .badge-reject { background: rgba(255,71,87,0.15); color: #ff4757; }
+        .badge-cached { background: rgba(127,90,240,0.15); color: #7f5af0; }
+
+        .selector-diff {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .selector-box {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .selector-box .label {
+            font-size: 11px;
+            color: #94a1b2;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .selector-box code {
+            font-family: 'Cascadia Code', 'Fira Code', monospace;
+            font-size: 13px;
+            color: #7f5af0;
+            word-break: break-all;
+        }
+
+        .selector-box.healed code { color: #2cb67d; }
+
+        .reasoning {
+            background: rgba(127,90,240,0.05);
+            border-left: 3px solid #7f5af0;
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            font-size: 13px;
+            color: #b8b8b8;
+            margin-bottom: 12px;
+        }
+
+        .meta-row {
+            display: flex;
+            gap: 20px;
+            font-size: 12px;
+            color: #94a1b2;
+        }
+
+        .meta-item span { color: #b8b8b8; }
+
+        .confidence-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 3px;
+            margin-top: 12px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .fill-high { background: linear-gradient(90deg, #2cb67d, #4ade80); }
+        .fill-medium { background: linear-gradient(90deg, #ffc107, #f59e0b); }
+        .fill-low { background: linear-gradient(90deg, #ff4757, #ef4444); }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #94a1b2;
+        }
+
+        .empty-state h3 { color: #fffffe; margin-bottom: 8px; }
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #555;
+            font-size: 12px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🔧 {{ title }}</h1>
+            <p class="subtitle">Generated: {{ generated_at }} | AI-Powered Self-Healing Framework</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.total }}</div>
+                <div class="stat-label">Total Events</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.auto_healed }}</div>
+                <div class="stat-label">Auto-Healed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.suggested }}</div>
+                <div class="stat-label">Suggested</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.rejected }}</div>
+                <div class="stat-label">Rejected</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.cached_hits }}</div>
+                <div class="stat-label">Cache Hits</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.heal_rate }}%</div>
+                <div class="stat-label">Heal Rate</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.avg_confidence }}</div>
+                <div class="stat-label">Avg Confidence</div>
+            </div>
+        </div>
+
+        <!-- Healing Events -->
+        <div class="events-section">
+            <h2>Healing Events</h2>
+
+            {% if events %}
+                {% for event in events %}
+                <div class="event-card">
+                    <div class="event-header">
+                        <strong>{{ event.get('test_name', event.get('element_intent', 'Unknown')) }}</strong>
+                        {% set decision = event.get('decision', 'unknown') %}
+                        {% if event.get('cached') or event.get('is_cached_hit') %}
+                            <span class="event-badge badge-cached">Cached</span>
+                        {% elif decision == 'auto_heal' %}
+                            <span class="event-badge badge-healed">Auto-Healed</span>
+                        {% elif decision == 'suggest' %}
+                            <span class="event-badge badge-suggest">Review</span>
+                        {% else %}
+                            <span class="event-badge badge-reject">Rejected</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="selector-diff">
+                        <div class="selector-box">
+                            <div class="label">❌ Broken Selector</div>
+                            <code>{{ event.get('original_selector', 'N/A') }}</code>
+                        </div>
+                        <div class="selector-box healed">
+                            <div class="label">✅ Healed Selector</div>
+                            <code>{{ event.get('healed_selector', 'N/A') }}</code>
+                        </div>
+                    </div>
+
+                    {% if event.get('reasoning') %}
+                    <div class="reasoning">
+                        💡 {{ event.get('reasoning') }}
+                    </div>
+                    {% endif %}
+
+                    <div class="meta-row">
+                        <div class="meta-item">Confidence: <span>{{ "%.2f"|format(event.get('confidence', 0)) }}</span></div>
+                        <div class="meta-item">Provider: <span>{{ event.get('llm_provider', 'N/A') }}</span></div>
+                        <div class="meta-item">Model: <span>{{ event.get('llm_model', 'N/A') }}</span></div>
+                        {% if event.get('page_url') %}
+                        <div class="meta-item">URL: <span>{{ event.get('page_url', '') | truncate(50) }}</span></div>
+                        {% endif %}
+                    </div>
+
+                    {% set conf = event.get('confidence', 0) %}
+                    <div class="confidence-bar">
+                        <div class="confidence-fill {% if conf >= 0.85 %}fill-high{% elif conf >= 0.60 %}fill-medium{% else %}fill-low{% endif %}"
+                             style="width: {{ (conf * 100)|int }}%"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <h3>No Healing Events</h3>
+                    <p>No self-healing events were recorded during this test run.</p>
+                    <p>All locators are working correctly! 🎉</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="footer">
+            AI-Powered Self-Healing Test Automation Framework &mdash; Enterprise QA Platform
+        </div>
+    </div>
+</body>
+</html>

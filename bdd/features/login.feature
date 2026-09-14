@@ -1,4 +1,4 @@
-@smoke
+@smoke @bdd
 Feature: Login Functionality
   As a QA engineer, I want to verify the login functionality
   so that I can ensure users can authenticate correctly.

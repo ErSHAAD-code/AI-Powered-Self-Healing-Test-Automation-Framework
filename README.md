@@ -32,6 +32,18 @@ Rather than isolated test scripts, this platform provides a unified **AI Core La
 
 ---
 
+## 🌐 Live Target Application
+
+The framework automates against a dedicated target web application equipped with dynamic DOM structures for self-healing verification:
+- **Production Live Target**: [ai-powered-self-healing-test-automa.vercel.app](https://ai-powered-self-healing-test-automa.vercel.app)
+- **Local Test Server**: `http://localhost:8000` (auto-spawned by PyTest fixtures during test execution)
+- **Demo Credentials**:
+  - `admin` / `admin123` *(Administrator)*
+  - `testuser` / `password` *(Tester)*
+  - `qe_engineer` / `quality2024` *(QE Engineer)*
+
+---
+
 ## 🏗️ System Architecture
 
 ```mermaid
